@@ -3,10 +3,9 @@ import PackagePlugin
 
 @main
 struct BuildAtPlugin: BuildToolPlugin {
-    /// Entry point for creating build commands for targets in Swift packages.
     func createBuildCommands(context: PluginContext, target: Target) async throws -> [Command] {
-        let tmpOutputFilePathString = ""
-        let outputFilePath = Path("")
+        let tmpOutputFilePathString = try tmpOutputFilePath().string
+        let outputFilePath = try outputFilePath(workDirectory: context.pluginWorkDirectory)
         
         let generatedFileContent = """
         public extension Date {
