@@ -9,7 +9,7 @@ struct BuildAtPlugin: BuildToolPlugin {
         
         let generatedFileContent = """
         public extension Date {
-            static let buildAt: Date = Date(timeIntervalSinceReferenceDate: \(Date.now.timeIntervalSinceReferenceDate)
+            static let buildAt: Date = Date(timeIntervalSinceReferenceDate: \(Date.now.timeIntervalSinceReferenceDate))
         }
         """
         
