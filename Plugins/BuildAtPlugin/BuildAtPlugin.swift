@@ -8,7 +8,7 @@ struct BuildAtPlugin: BuildToolPlugin {
         let outputFilePath = try outputFilePath(workDirectory: context.pluginWorkDirectory)
         
         let generatedFileContent = """
-        import Foundation
+        public import Foundation
         
         public extension Date {
             static let buildAt: Date = Date(timeIntervalSinceReferenceDate: \(Date.now.timeIntervalSinceReferenceDate))
