@@ -7,13 +7,25 @@ struct BuildAtPlugin: BuildToolPlugin {
         let tmpOutputFilePathString = try tmpOutputFilePath().string
         let outputFilePath = try outputFilePath(workDirectory: context.pluginWorkDirectory)
         
-        let generatedFileContent = """
-        public import Foundation
+        // AccessLevelOnImport
+//        let importCode = """
+//        public import Foundation
+//        """
         
+        let importCode = """
+        import Foundation
+        """
+        
+        let bodyCode = """
         public extension Date {
             static let buildAt: Date = Date(timeIntervalSinceReferenceDate: \(Date.now.timeIntervalSinceReferenceDate))
         }
         """
+        
+        let generatedFileContent = [
+            importCode,
+            bodyCode
+        ].joined(separator: "\n")
         
         try generatedFileContent.write(to: URL(fileURLWithPath: tmpOutputFilePathString), atomically: true, encoding: .utf8)
         
