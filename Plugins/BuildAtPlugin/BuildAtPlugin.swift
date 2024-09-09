@@ -8,13 +8,13 @@ struct BuildAtPlugin: BuildToolPlugin {
         let outputFilePath = try outputFilePath(workDirectory: context.pluginWorkDirectory)
         
         // AccessLevelOnImport
-//        let importCode = """
-//        public import Foundation
-//        """
-        
         let importCode = """
-        import Foundation
+        public import Foundation
         """
+        
+//        let importCode = """
+//        import Foundation
+//        """
         
         let bodyCode = """
         public extension Date {
