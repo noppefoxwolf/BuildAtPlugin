@@ -4,8 +4,8 @@ import PackagePlugin
 @main
 struct BuildAtPlugin: BuildToolPlugin {
     func createBuildCommands(context: PluginContext, target: Target) async throws -> [Command] {
-        let tmpOutputFilePathString = try tmpOutputFilePath().string
-        let outputFilePath = try outputFilePath(workDirectory: context.pluginWorkDirectory)
+        let tmpOutputFilePathString = try tmpOutputFilePath().path()
+        var outputFilePath = try outputFilePath(workDirectory: context.pluginWorkDirectoryURL)
         
         // AccessLevelOnImport
         let importCode = """
@@ -28,32 +28,33 @@ struct BuildAtPlugin: BuildToolPlugin {
         ].joined(separator: "\n")
         
         try generatedFileContent.write(to: URL(fileURLWithPath: tmpOutputFilePathString), atomically: true, encoding: .utf8)
+        outputFilePath.deleteLastPathComponent()
         
         return [
             .prebuildCommand(
                 displayName: "BuildAtPlugin",
-                executable: Path("/bin/cp"),
+                executable: URL(filePath: "/bin/cp"),
                 arguments: [
                     tmpOutputFilePathString,
-                    outputFilePath.string
+                    outputFilePath.path()
                 ],
-                outputFilesDirectory: outputFilePath.removingLastComponent()
+                outputFilesDirectory: outputFilePath
             )
         ]
     }
     
     private let generatedFileName = "BuildAtPlugin+Generated.swift"
     
-    private func tmpOutputFilePath() throws -> Path {
-        let tmpDirectory = Path(NSTemporaryDirectory())
-        try FileManager.default.createDirectoryIfNotExists(atPath: tmpDirectory.string)
-        return tmpDirectory.appending(generatedFileName)
+    private func tmpOutputFilePath() throws -> URL {
+        let tmpDirectory = URL(filePath: NSTemporaryDirectory())
+        try FileManager.default.createDirectoryIfNotExists(atPath: tmpDirectory.path())
+        return tmpDirectory.appending(path: generatedFileName)
     }
     
-    private func outputFilePath(workDirectory: Path) throws -> Path {
-        let outputDirectory = workDirectory.appending("Output")
-        try FileManager.default.createDirectoryIfNotExists(atPath: outputDirectory.string)
-        return outputDirectory.appending(generatedFileName)
+    private func outputFilePath(workDirectory: URL) throws -> URL {
+        let outputDirectory = workDirectory.appending(path: "Output")
+        try FileManager.default.createDirectoryIfNotExists(atPath: outputDirectory.path())
+        return outputDirectory.appending(path: generatedFileName)
     }
 }
 
