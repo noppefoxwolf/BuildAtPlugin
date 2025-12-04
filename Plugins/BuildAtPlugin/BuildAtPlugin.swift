@@ -59,13 +59,13 @@ struct BuildAtPlugin: BuildToolPlugin {
     private func tmpOutputFilePath() throws -> URL {
         let tmpDirectory = URL(filePath: NSTemporaryDirectory())
         try FileManager.default.createDirectoryIfNotExists(atPath: tmpDirectory.path())
-        return tmpDirectory.appending(path: generatedFileName)
+        return tmpDirectory.appending(component: generatedFileName)
     }
     
     private func outputFilePath(workDirectory: URL) throws -> URL {
         let outputDirectory = workDirectory.appending(path: "Output")
         try FileManager.default.createDirectoryIfNotExists(atPath: outputDirectory.path())
-        return outputDirectory.appending(path: generatedFileName)
+        return outputDirectory.appending(component: generatedFileName)
     }
 }
 
