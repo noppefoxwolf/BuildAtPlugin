@@ -12,13 +12,14 @@ struct BuildAtPlugin: BuildToolPlugin {
         public import Foundation
         """
         
-//        let importCode = """
-//        import Foundation
-//        """
-        
+        let buildAtDate = Date.now.timeIntervalSinceReferenceDate
         let bodyCode = """
-        public extension Date {
-            static let buildAt: Date = Date(timeIntervalSinceReferenceDate: \(Date.now.timeIntervalSinceReferenceDate))
+        public extension Foundation.Date {
+            static var buildAt: Foundation.Date {
+                Foundation.Date(
+                    timeIntervalSinceReferenceDate: \(buildAtDate)
+                )
+            }
         }
         """
         
@@ -27,7 +28,11 @@ struct BuildAtPlugin: BuildToolPlugin {
             bodyCode
         ].joined(separator: "\n")
         
-        try generatedFileContent.write(to: URL(fileURLWithPath: tmpOutputFilePathString), atomically: true, encoding: .utf8)
+        try generatedFileContent.write(
+            to: URL(fileURLWithPath: tmpOutputFilePathString),
+            atomically: true,
+            encoding: .utf8
+        )
         outputFilePath.deleteLastPathComponent()
         
         return [
@@ -43,7 +48,9 @@ struct BuildAtPlugin: BuildToolPlugin {
         ]
     }
     
-    private let generatedFileName = "BuildAtPlugin+Generated.swift"
+    private var generatedFileName: String {
+        "BuildAtPlugin+Generated.swift"
+    }
     
     private func tmpOutputFilePath() throws -> URL {
         let tmpDirectory = URL(filePath: NSTemporaryDirectory())
