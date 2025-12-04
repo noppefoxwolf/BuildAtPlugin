@@ -21,6 +21,10 @@ struct BuildAtPlugin: BuildToolPlugin {
                 )
             }
         }
+        
+        public enum BuildAtPlugin {
+            public static var buildDate: Date { Date.buildAt }
+        }
         """
         
         let generatedFileContent = [
